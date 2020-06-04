@@ -1,25 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { useSelector, useDispatch } from "react-redux";
+import Home from "./../src/Pages/Home";
+import Register from "./../src/Pages/Register";
+import Login from "./../src/Pages/Login";
+import Navbar from "./../src/Components/Navbar";
+import MyProfile from "./../src/Pages/MyProfile";
+
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 
 function App() {
+  const isAuthenticated = useSelector((state) => state.isAuthenticated);
+  const user_id = useSelector((state) => state.user_id);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Navbar />
+        <div className="container">
+          <Switch>
+            <Route path="/register">
+              {isAuthenticated ? (
+                <Redirect to={"/profiles/" + user_id} />
+              ) : (
+                <Register />
+              )}
+            </Route>
+
+            <Route path="/login">
+              {isAuthenticated ? (
+                <Redirect to={"/profiles/" + user_id} />
+              ) : (
+                <Login />
+              )}
+            </Route>
+            <Route path="/myprofile">
+              {!isAuthenticated ? <Redirect to="/login/" /> : <MyProfile />}
+            </Route>
+            <Route exact path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </div>
+      </div>
+    </Router>
   );
 }
 
