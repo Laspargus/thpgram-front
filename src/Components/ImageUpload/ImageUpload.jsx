@@ -10,10 +10,11 @@ const ImageUpload = () => {
   const [description, SetDescription] = useState();
   const [image64, SetImage64] = useState();
   const token = useSelector((state) => state.token);
-  const user_id = useSelector((state) => state.id);
+  const user_id = useSelector((state) => state.user_id);
 
   const handleImageInput = (e) => {
-    SetImage(e);
+    let file = e.target.files[0];
+    SetImage(file);
   };
 
   const handleDescriptionInput = (e) => {
@@ -28,40 +29,41 @@ const ImageUpload = () => {
   const encode = async (image) => {
     let encodedImage = await superBase64(image);
     SetImage64(encodedImage);
+    console.log(encodedImage);
   };
 
-  // useEffect(() => {
-  //   const data = {
-  //     stream: image64,
-  //     description: description,
-  //     extension: "image/jpg",
-  //     private: false,
-  //     user: user_id,
-  //   };
+  useEffect(() => {
+    const data = {
+      stream: image64,
+      description: description,
+      extension: "image/jpg",
+      private: false,
+      user_id: user_id,
+    };
 
-  //   console.log("les data qui partent", data);
-  //   fetch("http://localhost:3000/images", {
-  //     method: "post",
-  //     headers: {
-  //       Authorization: "Bearer " + token,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(data),
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw Error(response.statusText);
-  //       }
-  //       return response;
-  //     })
-  //     .then((response) => response.json())
-  //     .then((response) => {
-  //       console.log(response);
-  //     })
-  //     .catch((error) => {
-  //       alert(error);
-  //     });
-  // }, [image64]);
+    console.log("les data qui partent", data);
+    fetch("http://localhost:3000/images", {
+      method: "post",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }, [image64]);
 
   return (
     <div className="card m-5 p-5">
@@ -69,7 +71,7 @@ const ImageUpload = () => {
         <input
           className="col-md-3"
           type="file"
-          onChange={(e) => handleImageInput(e.target.value)}
+          onChange={(e) => handleImageInput(e)}
         />
         <input
           className="col-md-3"
