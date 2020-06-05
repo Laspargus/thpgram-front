@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import superBase64 from "super-base-64";
 import { useDispatch, useSelector } from "react-redux";
 
-const ImageUpload = () => {
+const ImageCreate = ({ handleUpload }) => {
   const [image, SetImage] = useState();
   const [description, SetDescription] = useState();
   const [image64, SetImage64] = useState();
@@ -15,15 +15,11 @@ const ImageUpload = () => {
   const handleImageInput = (e) => {
     let file = e.target.files[0];
     SetImage(file);
+    encode(e.target.files[0]);
   };
 
   const handleDescriptionInput = (e) => {
     SetDescription(e);
-  };
-
-  const handleSubmit = () => {
-    console.log("monimage", image);
-    encode(image);
   };
 
   const encode = async (image) => {
@@ -32,7 +28,7 @@ const ImageUpload = () => {
     console.log(encodedImage);
   };
 
-  useEffect(() => {
+  const handleSubmit = () => {
     const data = {
       stream: image64,
       description: description,
@@ -40,6 +36,8 @@ const ImageUpload = () => {
       private: false,
       user_id: user_id,
     };
+
+    handleUpload(data);
 
     console.log("les data qui partent", data);
     fetch("http://localhost:3000/api/v1/images", {
@@ -63,7 +61,7 @@ const ImageUpload = () => {
       .catch((error) => {
         alert(error);
       });
-  }, [image64]);
+  };
 
   return (
     <div className="card m-5 p-5">
@@ -90,4 +88,4 @@ const ImageUpload = () => {
   );
 };
 
-export default ImageUpload;
+export default ImageCreate;
