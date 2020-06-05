@@ -10,6 +10,13 @@ const ImageIndex = () => {
     SetImageList(imagelist.concat(item));
   };
 
+  const handleEdit = (data) => {
+    const newlist = imagelist.map((image) =>
+      image.id === data.id ? data : image
+    );
+    SetImageList(newlist);
+  };
+
   const handleDelete = (item) => {
     const newlist = imagelist.filter((post) => post.id !== item.id);
     SetImageList(newlist);
@@ -42,7 +49,11 @@ const ImageIndex = () => {
   return (
     <>
       <ImageCreate handleUpload={handleUpload} />
-      <ImageList imagelist={imagelist} handleDelete={handleDelete} />
+      <ImageList
+        imagelist={imagelist}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
     </>
   );
 };
