@@ -42,7 +42,7 @@ const ImageUpload = () => {
     };
 
     console.log("les data qui partent", data);
-    fetch("http://localhost:3000/images", {
+    fetch("http://localhost:3000/api/v1/images", {
       method: "post",
       headers: {
         Authorization: "Bearer " + token,

@@ -8,7 +8,7 @@ const Home = () => {
   const [liststatus, SetListStatus] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3000/", {
+    fetch("http://localhost:3000/api/v1/images", {
       method: "get",
       headers: {
         "Content-Type": "application/json",
