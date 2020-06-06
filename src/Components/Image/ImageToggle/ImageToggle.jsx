@@ -3,6 +3,7 @@ import ImageCard from "./../ImageCard";
 import ImageEdit from "./../ImageEdit";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { deleteImage } from "./../../../API/ImageApi";
 
 const ImageToggle = ({ image, handleDelete, handleEdit }) => {
   const [toggle, SetToggle] = useState(false);
@@ -12,36 +13,15 @@ const ImageToggle = ({ image, handleDelete, handleEdit }) => {
     SetToggle(true);
   };
 
-  const setDelete = () => {
+  const setDelete = async () => {
     handleDelete(image);
-
-    fetch(`http://localhost:3000/api/v1/images/${image.id}`, {
-      method: "delete",
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        } else {
-          return response;
-        }
-      })
-      .then((response) => response.json())
-      .then((response) => {
-        console.log("delete semble avoir fonctionne");
-        console.log(response);
-      })
-      .catch((error) => {
-        alert(error);
-      });
+    await deleteImage(image, token);
   };
 
   const setEdit = () => {
     SetToggle(!toggle);
   };
+
   return (
     <>
       <div className="col-md-4 card">

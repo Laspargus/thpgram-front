@@ -4,7 +4,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import superBase64 from "super-base-64";
 import { useDispatch, useSelector } from "react-redux";
-
+import { addImage } from "./../../../API/ImageApi";
 const ImageCreate = ({ handleUpload }) => {
   const [image, SetImage] = useState();
   const [description, SetDescription] = useState();
@@ -28,7 +28,7 @@ const ImageCreate = ({ handleUpload }) => {
     console.log(encodedImage);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
       stream: image64,
       description: description,
@@ -38,29 +38,7 @@ const ImageCreate = ({ handleUpload }) => {
     };
 
     handleUpload(data);
-
-    console.log("les data qui partent", data);
-    fetch("http://localhost:3000/api/v1/images", {
-      method: "post",
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .then((response) => response.json())
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        alert(error);
-      });
+    await addImage(data, token);
   };
 
   return (

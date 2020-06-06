@@ -3,9 +3,12 @@ import { useState, useEffect } from "react";
 import ImageCreate from "./../ImageCreate";
 import ImageList from "./../ImageList";
 
+// api
+import { fetchImages } from "./../../../API/ImageApi";
+
 const ImageIndex = () => {
   const [imagelist, SetImageList] = useState([]);
-
+  const [isloading, SetIsLoading] = useState(false);
   const handleUpload = (item) => {
     SetImageList(imagelist.concat(item));
   };
@@ -23,37 +26,28 @@ const ImageIndex = () => {
   };
 
   useEffect(() => {
-    console.log("je mets à jour la liste des images");
-    fetch("http://localhost:3000/api/v1/images", {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .then((response) => response.json())
-      .then((response) => {
-        console.log("ma liste dimage", response);
-        SetImageList(response);
-      })
-      .catch((error) => {
-        alert(error);
-      });
+    SetIsLoading(true);
+    refreshImages();
   }, []);
+
+  const refreshImages = async () => {
+    const images = await fetchImages();
+    SetImageList(images);
+    SetIsLoading(false);
+  };
 
   return (
     <>
       <ImageCreate handleUpload={handleUpload} />
-      <ImageList
-        imagelist={imagelist}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-      />
+      {isloading ? (
+        <div>loading...</div>
+      ) : (
+        <ImageList
+          imagelist={imagelist}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
+      )}
     </>
   );
 };

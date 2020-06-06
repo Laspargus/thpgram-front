@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import superBase64 from "super-base-64";
+import { editImage } from "./../../../API/ImageApi";
 
 const ImageEdit = ({ image, handleEdit }) => {
   const [editedImage, SetEditedImage] = useState(image);
@@ -8,7 +9,6 @@ const ImageEdit = ({ image, handleEdit }) => {
   const [image64, SetImage64] = useState();
   const token = useSelector((state) => state.token);
   const user_id = useSelector((state) => state.user_id);
-
   const handleImageInput = (e) => {
     let file = e.target.files[0];
     SetEditedImage(file);
@@ -24,7 +24,7 @@ const ImageEdit = ({ image, handleEdit }) => {
     SetImage64(encodedImage);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
       id: image.id,
       stream: image64,
@@ -35,30 +35,7 @@ const ImageEdit = ({ image, handleEdit }) => {
     };
 
     handleEdit(data);
-
-    console.log("les data qui partent", data);
-    fetch(`http://localhost:3000/api/v1/images/${image.id}`, {
-      method: "put",
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .then((response) => response.json())
-      .then((response) => {
-        console.log("ledit semble avoir fonctionne");
-        console.log(response);
-      })
-      .catch((error) => {
-        alert(error);
-      });
+    await editImage(image, token, data);
   };
 
   return (
