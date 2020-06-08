@@ -7,6 +7,7 @@ export const fetchImages = async () => {
       "Content-Type": "application/json",
     },
   });
+
   return await response.json();
 };
 
